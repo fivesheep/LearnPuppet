@@ -1,0 +1,18 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$install_puppetserver_script = <<-EOF
+  PKG=puppetlabs-release-pc1-trusty.deb
+  wget -q https://apt.puppetlabs.com/$PKG -O /tmp/$PKG
+  dpkg -i /tmp/$PKG
+  apt-get update
+  apt-get -y install puppetserver
+EOF
+
+Vagrant.configure("2") do |config|
+  config.vm.network "public_network"
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.hostname = "pserver"
+  config.vm.synced_folder "./data", "/data"
+  config.vm.provision "shell", inline: $install_puppetserver_script
+end
